@@ -217,7 +217,7 @@ const EVENT_SIZE: usize = 200;
 #[repr(packed)]
 pub struct AnyEvent {
     pub event_type: u8,
-    pub padding: [u8; EVENT_SIZE - 1],
+    pub _padding: [u8; EVENT_SIZE - 1],
 }
 unsafe impl TriviallyTransmutable for AnyEvent {}
 
@@ -230,7 +230,7 @@ pub struct FillEvent {
     pub maker_out: bool, // true if maker order quantity == 0
     pub version: u8,
     pub market_fees_applied: bool,
-    pub padding: [u8; 2],
+    pub _padding: [u8; 2],
     pub timestamp: u64,
     pub seq_num: usize, // note: usize same as u64
 
@@ -284,7 +284,7 @@ impl FillEvent {
             maker_out,
             version,
             market_fees_applied: true, // Since mango v3.3.5, market fees are adjusted at matching time
-            padding: [0u8; 2],
+            _padding: [0u8; 2],
             timestamp,
             seq_num,
             maker,
@@ -340,12 +340,12 @@ pub struct OutEvent {
     pub event_type: u8,
     pub side: Side,
     pub slot: u8,
-    padding0: [u8; 5],
+    _padding0: [u8; 5],
     pub timestamp: u64,
     pub seq_num: usize,
     pub owner: Pubkey,
     pub quantity: i64,
-    padding1: [u8; EVENT_SIZE - 64],
+    _padding1: [u8; EVENT_SIZE - 64],
 }
 unsafe impl TriviallyTransmutable for OutEvent {}
 impl OutEvent {
@@ -361,12 +361,12 @@ impl OutEvent {
             event_type: EventType::Out.into(),
             side,
             slot,
-            padding0: [0; 5],
+            _padding0: [0; 5],
             timestamp,
             seq_num,
             owner,
             quantity,
-            padding1: [0; EVENT_SIZE - 64],
+            _padding1: [0; EVENT_SIZE - 64],
         }
     }
 }
@@ -376,7 +376,7 @@ impl OutEvent {
 /// Liquidation for the PerpMarket this EventQueue is for
 pub struct LiquidateEvent {
     pub event_type: u8,
-    padding0: [u8; 7],
+    _padding0: [u8; 7],
     pub timestamp: u64,
     pub seq_num: usize,
     pub liqee: Pubkey,
@@ -384,7 +384,7 @@ pub struct LiquidateEvent {
     pub price: I80F48,           // oracle price at the time of liquidation
     pub quantity: i64,           // number of contracts that were moved from liqee to liqor
     pub liquidation_fee: I80F48, // liq fee for this earned for this market
-    padding1: [u8; EVENT_SIZE - 128],
+    _padding1: [u8; EVENT_SIZE - 128],
 }
 unsafe impl TriviallyTransmutable for LiquidateEvent {}
 impl LiquidateEvent {
@@ -399,7 +399,7 @@ impl LiquidateEvent {
     ) -> Self {
         Self {
             event_type: EventType::Liquidate.into(),
-            padding0: [0u8; 7],
+            _padding0: [0u8; 7],
             timestamp,
             seq_num,
             liqee,
@@ -407,7 +407,7 @@ impl LiquidateEvent {
             price,
             quantity,
             liquidation_fee,
-            padding1: [0u8; EVENT_SIZE - 128],
+            _padding1: [0u8; EVENT_SIZE - 128],
         }
     }
 }

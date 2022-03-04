@@ -71,7 +71,7 @@ pub struct InnerNode {
     /// iterate through the whole bookside.
     pub child_earliest_expiry: [u64; 2],
 
-    pub padding: [u8; NODE_SIZE - 48],
+    pub _padding: [u8; NODE_SIZE - 48],
 }
 
 impl InnerNode {
@@ -82,7 +82,7 @@ impl InnerNode {
             key,
             children: [0; 2],
             child_earliest_expiry: [u64::MAX; 2],
-            padding: [0; NODE_SIZE - 48],
+            _padding: [0; NODE_SIZE - 48],
         }
     }
 
@@ -187,7 +187,7 @@ impl LeafNode {
 struct FreeNode {
     tag: u32,
     next: NodeHandle,
-    padding: [u8; NODE_SIZE - 8],
+    _padding: [u8; NODE_SIZE - 8],
 }
 
 #[derive(Copy, Clone, Pod)]
@@ -624,7 +624,8 @@ impl BookSide {
         let mut parent_h = self.root()?;
         let (mut child_h, mut crit_bit) = match self.get(parent_h).unwrap().case().unwrap() {
             NodeRef::Leaf(&leaf) if leaf.key == search_key => {
-                assert_eq!(self.leaf_count, 1);
+                let leaf_count = self.leaf_count;
+                assert_eq!(leaf_count, 1);
                 self.root_node = 0;
                 self.leaf_count = 0;
                 let _old_root = self.remove(parent_h).unwrap();
@@ -681,7 +682,7 @@ impl BookSide {
                 NodeTag::FreeNode.into()
             },
             next: self.free_list_head,
-            padding: [0; 80],
+            _padding: [0; 80],
         });
 
         self.free_list_len += 1;
@@ -713,7 +714,10 @@ impl BookSide {
         // TODO OPT possibly unnecessary check here - remove if we need compute
         match NodeTag::try_from(node.tag) {
             Ok(NodeTag::FreeNode) => assert!(self.free_list_len > 1),
-            Ok(NodeTag::LastFreeNode) => assert_eq!(self.free_list_len, 1),
+            Ok(NodeTag::LastFreeNode) => {
+                let free_list_len = self.free_list_len;
+                assert_eq!(free_list_len, 1)
+            },
             _ => unreachable!(),
         };
 
