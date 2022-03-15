@@ -69,7 +69,7 @@ declare_check_assert_macros!(SourceFileId::State);
 //
 
 #[repr(u8)]
-#[derive(IntoPrimitive, TryFromPrimitive)]
+#[derive(IntoPrimitive, TryFromPrimitive, Debug)]
 pub enum DataType {
     MangoGroup = 0,
     MangoAccount,
@@ -109,7 +109,7 @@ pub enum AssetType {
     Perp = 1,
 }
 
-#[derive(Copy, Clone, Pod, Default)]
+#[derive(Copy, Clone, Pod, Default, Debug)]
 #[repr(C)]
 /// Stores meta information about the `Account` on chain
 pub struct MetaData {
@@ -134,7 +134,7 @@ impl MetaData {
     }
 }
 
-#[derive(Copy, Clone, Pod)]
+#[derive(Copy, Clone, Pod, Debug)]
 #[repr(C)]
 pub struct TokenInfo {
     pub mint: Pubkey,
@@ -149,7 +149,7 @@ impl TokenInfo {
     }
 }
 
-#[derive(Copy, Clone, Pod)]
+#[derive(Copy, Clone, Pod, Debug)]
 #[repr(C)]
 pub struct SpotMarketInfo {
     pub spot_market: Pubkey,
@@ -166,7 +166,7 @@ impl SpotMarketInfo {
     }
 }
 
-#[derive(Copy, Clone, Pod)]
+#[derive(Copy, Clone, Pod, Debug)]
 #[repr(C)]
 pub struct PerpMarketInfo {
     pub perp_market: Pubkey, // One of these may be empty
@@ -187,7 +187,7 @@ impl PerpMarketInfo {
     }
 }
 
-#[derive(Copy, Clone, Pod, Loadable)]
+#[derive(Copy, Clone, Pod, Loadable, Debug)]
 #[repr(C)]
 pub struct MangoGroup {
     pub meta_data: MetaData,
@@ -2036,7 +2036,7 @@ impl PerpAccount {
     }
 }
 
-#[derive(Copy, Clone, Pod)]
+#[derive(Copy, Clone, Pod, Debug)]
 #[repr(C)]
 /// Information regarding market maker incentives for a perp market
 pub struct LiquidityMiningInfo {
@@ -2060,8 +2060,8 @@ pub struct LiquidityMiningInfo {
 
 /// This will hold top level info about the perps market
 /// Likely all perps transactions on a market will be locked on this one because this will be passed in as writable
-#[derive(Copy, Clone, Pod, Loadable)]
-#[repr(C)]
+#[derive(Copy, Clone, Pod, Loadable, Debug)]
+#[repr(packed)]
 pub struct PerpMarket {
     pub meta_data: MetaData,
 

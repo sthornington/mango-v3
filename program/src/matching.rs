@@ -36,7 +36,7 @@ const NODE_SIZE: usize = 88;
 /// This exists as a guard against excessive compute use.
 const DROP_EXPIRED_ORDER_LIMIT: usize = 5;
 
-#[derive(IntoPrimitive, TryFromPrimitive)]
+#[derive(IntoPrimitive, TryFromPrimitive, Debug)]
 #[repr(u32)]
 pub enum NodeTag {
     Uninitialized = 0,
@@ -51,7 +51,7 @@ pub enum NodeTag {
 /// Each InnerNode has exactly two children, which are either InnerNodes themselves,
 /// or LeafNodes. The children share the top `prefix_len` bits of `key`. The left
 /// child has a 0 in the next bit, and the right a 1.
-#[derive(Copy, Clone, Pod)]
+#[derive(Copy, Clone, Pod, Debug)]
 #[repr(packed)]
 pub struct InnerNode {
     pub tag: u32,
@@ -182,7 +182,7 @@ impl LeafNode {
     }
 }
 
-#[derive(Copy, Clone, Pod)]
+#[derive(Copy, Clone, Pod, Debug)]
 #[repr(packed)]
 struct FreeNode {
     tag: u32,
@@ -190,7 +190,7 @@ struct FreeNode {
     _padding: [u8; NODE_SIZE - 8],
 }
 
-#[derive(Copy, Clone, Pod)]
+#[derive(Copy, Clone, Pod, Debug)]
 #[repr(packed)]
 pub struct AnyNode {
     pub tag: u32,
@@ -340,7 +340,7 @@ pub const MAX_BOOK_NODES: usize = 1024; // NOTE: this cannot be larger than u32:
 /// A binary tree on AnyNode::key()
 ///
 /// The key encodes the price in the top 64 bits.
-#[derive(Copy, Clone, Pod, Loadable)]
+#[derive(Copy, Clone, Pod, Loadable, Debug)]
 #[repr(packed)]
 pub struct BookSide {
     pub meta_data: MetaData,
